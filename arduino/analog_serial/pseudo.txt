@@ -4,7 +4,6 @@ Wait for button to be pressed
 Read potentiometer voltage
 Map to value between 0 and 255
 Send potentiometer value to pi over serial
-Have pi print the value it reads
 
 
 Stage 2 of testing:
