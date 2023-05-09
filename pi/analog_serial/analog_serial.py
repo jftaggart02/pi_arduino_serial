@@ -2,8 +2,10 @@
 import serial
 
 # begin serial communication at baud of 9600
+# run ls dev/tty* and see if there's an "ACMX" or "USBX"
+# and change the serial address below accordingly.
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser = serial.Serial('/dev/ttyUSB1', 9600, timeout=1)
     ser.reset_input_buffer()
     
     while True:
@@ -14,3 +16,5 @@ if __name__ == '__main__':
             # print "I read " + value
             print("I read ")
             print(analog_val)
+            # send value to arduino
+            ser.write(analog_val)
