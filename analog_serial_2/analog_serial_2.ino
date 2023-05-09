@@ -58,8 +58,8 @@ void loop()
     }
 
     // Read 2 bytes
-    ledID = serial.read();
-    ledVal = serial.read();
+    ledID = Serial.read();
+    ledVal = Serial.read();
 
     // Write LEDs accordingly
     if (ledID == 3)
