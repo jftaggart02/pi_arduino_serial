@@ -1,0 +1,47 @@
+Stage 1 of testing:
+
+Wait for button to be pressed
+Read potentiometer voltage
+Map to value between 0 and 255
+Send potentiometer value to pi over serial
+
+
+Stage 2 of testing:
+
+Wait for button to be pressed
+Read potentiometer voltage
+Map to value between 0 and 255
+Send potentiometer value to pi over serial
+Wait for pi to send back that value
+Write that value to LED
+
+
+Stage 3 of testing:
+
+Loop forever
+
+	Read potentiometer 1
+	Send 2 bytes: number 1 and mapped potentiometer value
+	
+	Read potentiometer 2
+	Send 2 bytes: number 1 and mapped potentiometer value
+	
+	If there are at least 2 bytes in input buffer,
+		
+		Read 2 bytes.
+		
+		Map 2nd byte to value from 0 to 1023.
+		
+		If first is number 3,
+		
+			Write analog value to LED 1
+			
+		Else if first is number 4,
+		
+			Write analog value to LED 2
+			
+		Endif
+	
+	Endif
+	
+Endloop
