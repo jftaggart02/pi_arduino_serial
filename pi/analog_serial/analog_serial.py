@@ -13,8 +13,5 @@ if __name__ == '__main__':
         if ser.in_waiting > 0:
             # read 1 byte
             analog_val = ser.read(1)
-            # print "I read " + value
-            print("I read ")
-            print(analog_val)
             # send value to arduino
             ser.write(analog_val)
