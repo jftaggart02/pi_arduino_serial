@@ -1,4 +1,3 @@
-#define BUTTON 13
 #define POT1 0
 #define LED 12
 
@@ -7,8 +6,8 @@
 void setup()
 {
 
-  // Set up button input
-  pinMode(BUTTON, INPUT);
+  // Set LED pin to output
+  pinMode(LED, OUTPUT);
 
   // Start serial communication at baud of 9600
   Serial.begin(9600);
@@ -23,15 +22,6 @@ int received;
 void loop()
 {
 
-  // Wait for button to be pressed
-  while (1)
-  {
-    if (digitalRead(BUTTON) == LOW)
-    {
-      break;
-    }
-  }
-
   // Read potentiometer voltage
   pot1 = analogRead(POT1);
 
@@ -42,7 +32,7 @@ void loop()
   Serial.write(byte(pot1));
 
   // Wait a bit for response
-  delay(100);
+  delay(50);
 
   // Check to see if pi responded and write LED to value received
   if (Serial.available() > 0)
@@ -50,7 +40,5 @@ void loop()
     received = Serial.read();
     analogWrite(LED, received);
   }
-
-  delay(1000);
 
 }
