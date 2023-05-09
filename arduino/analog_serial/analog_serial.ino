@@ -31,14 +31,17 @@ void loop()
   // Send potentiometer value to pi over serial
   Serial.write(byte(pot1));
 
-  // Wait a bit for response
-  delay(50);
-
-  // Check to see if pi responded and write LED to value received
-  if (Serial.available() > 0)
+  // Wait until response is received
+  while(1)
   {
-    received = Serial.read();
-    analogWrite(LED, received);
+    if (Serial.available() > 0)
+    {
+      break;
+    }
   }
+
+  // Write LED to value received
+  received = Serial.read();
+  analogWrite(LED, received);
 
 }
