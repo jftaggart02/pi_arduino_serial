@@ -1,3 +1,5 @@
+// NOTE: This program only currently works with analog_serial.py
+
 #define POT1 0
 #define POT2 1
 #define LED1 12
@@ -62,11 +64,11 @@ void loop()
     ledVal = Serial.read();
 
     // Write LEDs accordingly
-    if (ledID == 3)
+    if (ledID == 1)
     {
       analogWrite(LED1, ledVal);
     }
-    else if (ledID == 4)
+    else if (ledID == 2)
     {
       analogWrite(LED2, ledVal);
     }
