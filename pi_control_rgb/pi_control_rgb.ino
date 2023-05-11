@@ -1,11 +1,10 @@
 #include "rgb_led.h"
 
 // Create RGB LED "LED1"
-// Red pin: 10
+// Red pin: 12
 // Green pin: 11
-// Blue Pin: 12
-// ID: '1'
-RGBLED LED1(10, 11, 12);
+// Blue Pin: 10
+RGBLED LED1(12, 11, 10);
 
 
 
@@ -22,7 +21,7 @@ void setup()
 
 
 
-byte data;
+byte r, g, b;
 int i;
 
 
@@ -33,7 +32,10 @@ void loop()
   // Read 3 bytes and set color of LED1 accordingly
   if (Serial.available() >= 3)
   {
-    LED1.setColor(Serial.read(), Serial.read(), Serial.read());
+    r = Serial.read();
+    g = Serial.read();
+    b = Serial.read();
+    LED1.setColor(r, g, b);
   }
 
 }
