@@ -11,7 +11,7 @@ void setup()
   pinMode(LED2, OUTPUT);
 
   // Start serial communication at 115200 baud
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   Serial.write('1');
 

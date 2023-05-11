@@ -9,7 +9,7 @@ waiting = True
 # run ls dev/tty* and see if there's an "ACMX" or "USBX"
 # and change the serial address below accordingly.
 if __name__ == '__main__':
-    ser = serial.Serial('COM6', 115200)
+    ser = serial.Serial('COM6', 9600)
     ser.reset_input_buffer()
     
     print("Waiting...")
