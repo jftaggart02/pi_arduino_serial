@@ -2,7 +2,6 @@
 #define LED2 13
 #define ERRLED 11
 
-
 void setup()
 {
 
@@ -13,7 +12,7 @@ void setup()
   // Start serial communication at 115200 baud
   Serial.begin(9600);
 
-  Serial.write('1');
+  Serial.write('R');
 
 }
 
@@ -25,6 +24,7 @@ void loop()
 
   if (Serial.available() > 1)
   {
+
     // Read 2 bytes
     ledID = Serial.read();
     ledVal = Serial.read();
@@ -42,6 +42,7 @@ void loop()
     {
       digitalWrite(ERRLED, HIGH);
     }
+    
   }
 
 }

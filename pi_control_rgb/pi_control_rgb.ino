@@ -1,3 +1,5 @@
+// PROGRAM FUNCTION: Reads serial messages from computer and makes an RGB LED light up accordingly
+
 #include "rgb_led.h"
 
 // Create RGB LED "LED1"
@@ -5,8 +7,6 @@
 // Green pin: 11
 // Blue Pin: 10
 RGBLED LED1(12, 11, 10);
-
-
 
 void setup()
 {
@@ -19,12 +19,8 @@ void setup()
 
 }
 
-
-
 byte r, g, b;
 int i;
-
-
 
 void loop() 
 {

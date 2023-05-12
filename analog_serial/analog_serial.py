@@ -1,3 +1,5 @@
+# PROGRAM FUNCTION: Reads bytes from arduino and sends them back one by one
+
 # import serial library
 import serial
 
@@ -12,6 +14,6 @@ if __name__ == '__main__':
         # wait for byte to appear in input buffer
         if ser.in_waiting > 0:
             # read 1 byte
-            analog_val = ser.read(1)
+            val = ser.read(1)
             # send value to arduino
-            ser.write(analog_val)
+            ser.write(val)

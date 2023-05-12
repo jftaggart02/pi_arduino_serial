@@ -1,18 +1,18 @@
+# PROGRAM FUNCTION: Sends serial messages to arduino that make an RGB LED cycle through
+# the color spectrum
+
 # import serial library
 import serial
 from time import sleep
-
 
 # global variables
 delay = 0.01
 arduino_ready_signal = 'R'
 
-
 # begin serial communication at baud of 9600
 # run ls dev/tty* and see if there's an "ACMX" or "USBX"
 # and change the serial address below accordingly.
 ser = serial.Serial('/dev/ttyUSB0', 9600)
-
 
 # sends serial message to arduino which it uses to 
 # change the color of the RGB LED
@@ -20,7 +20,6 @@ def setColor(r, g, b):
     ser.write(r.to_bytes(length=1,byteorder='big'))
     ser.write(g.to_bytes(length=1,byteorder='big'))
     ser.write(b.to_bytes(length=1,byteorder='big'))
-    
     
 # waits for the arduino to send a character indicating
 # that it's ready to receive data
@@ -39,7 +38,6 @@ def wait_for_arduino():
                 waiting = False
                 
     print("Done waiting.")
-    
 
 # tells the arduino to make the LED cycle through color spectrum
 def color_cycle():
@@ -72,16 +70,13 @@ def color_cycle():
     for x in range(255, 0, -1):
         setColor(255, 0, x)
         sleep(delay)
-        
     
 # in case there was anything in the input buffer we didn't want,
 # we clear it
 ser.reset_input_buffer()
 
-
 # wait for arduino to be ready
 wait_for_arduino()
-
 
 while True:
     color_cycle()

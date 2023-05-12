@@ -1,3 +1,5 @@
+// What I found out by running this program:
+// - Serial sends and receives data through USB cable while Serial1, Serial2, and Serial3 don't
 
 // This shouldn't output anything to the serial monitor.
 // /*

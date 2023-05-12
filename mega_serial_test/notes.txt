@@ -1,7 +1,0 @@
-What I found out by running this program:
-- When you upload it to the Arduino and look at the serial monitor, it doesn't read anything.
-- When you change every instance of "Serial1" to "Serial", upload it to the Arduino, and look
-at the serial monitor, it reads what the Arduino is printing.
-- What I learned from this is only Serial sends data through the USB cable. The other objects,
-Serial1, Serial2, and Serial3, only send data through the Rx and Tx pins that aren't pins 1 
-and 0.

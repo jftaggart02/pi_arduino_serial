@@ -1,3 +1,6 @@
+Pseudocode for program that allows arduino and raspberry pi to send and receive analog values 
+
+
 For Arduino:
 
 

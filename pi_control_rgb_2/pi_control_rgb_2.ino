@@ -1,3 +1,5 @@
+// PROGRAM FUNCTION: Reads serial messages from computer and makes 2 RGB LEDs light up accordingly
+
 #include "rgb_led.h"
 
 // Create RGB LED "LED1"
@@ -14,8 +16,6 @@ RGBLED LED1(12, 11, 10, '1');
 // ID: '2'
 RGBLED LED2(9, 8, 7, '2');
 
-
-
 void setup()
 {
 
@@ -26,8 +26,6 @@ void setup()
   Serial.write('R');
 
 }
-
-
 
 byte r, g, b, id;
 int i;

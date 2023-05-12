@@ -1,8 +1,10 @@
+# PROGRAM FUNCTION: Sends serial messages to arduino that make 2 RGB LEDs cycle through
+# the color spectrum
+
 # import pySerial library
 import serial
 # import file rgb_led_serial.py
 import rgb_led_serial
-
 
 # Here, I create a serial object with the pySerial library
 # arguments: 
@@ -19,7 +21,6 @@ ser = serial.Serial('COM6', 9600)
 #     > go to arduino IDE and find out what port the arduino is connected to
 #     > it might be "COM6" for example
 
-    
 # waits for the arduino to send a character indicating that it's ready to receive data
 def wait_for_arduino():
 
@@ -39,7 +40,6 @@ def wait_for_arduino():
                 
     print("Done waiting.")
 
-
 # here I create 2 RGBLED objects
 # arguments: 
 #   > unique ID for each LED (must be converted to bytes)
@@ -47,14 +47,11 @@ def wait_for_arduino():
 LED1 = rgb_led_serial.RGBLED(b"1", ser)
 LED2 = rgb_led_serial.RGBLED(b"2", ser)
         
-    
 # in case there was anything in the input buffer I didn't want, I clear it
 ser.reset_input_buffer()
 
-
 # wait for arduino to be ready
 wait_for_arduino()
-
 
 # now you can do whatever you want here with the LED objects created!
 while True:

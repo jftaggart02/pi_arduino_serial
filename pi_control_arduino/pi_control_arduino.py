@@ -1,9 +1,11 @@
+# PROGRAM FUNCTION: Send serial messages to arduino that control the
+# brightness of 2 different LEDs
+
 # import serial library
 import serial
 from time import sleep
 
 delay = 0.01
-waiting = True
 
 # begin serial communication at baud of 9600
 # run ls dev/tty* and see if there's an "ACMX" or "USBX"
@@ -14,25 +16,27 @@ if __name__ == '__main__':
     
     print("Waiting...")
     
-    while waiting == True:
+    waiting = True
+    
+    # wait to receive message from Arduino indicating it's ready
+    while waiting:
         if ser.in_waiting > 0:
-            print("Received something.")
             char = ser.read(1).decode('utf-8')
-            if char == '1':
+            if char == 'R':
                 print("Arduino is ready.")
                 waiting = False
                 
     print("Done waiting.")
   
     while True:
-        # slowly increase LED values
+        # slowly increase LED brightness
         for x in range(0, 256, 2):
             ser.write(b'1')
             ser.write(x.to_bytes())
             ser.write(b'2')
             ser.write(x.to_bytes())
             sleep(delay)
-        # slowoy decrease LED values
+        # slowly decrease LED brightness
         for x in range(255, 0, -2):
             ser.write(b'1')
             ser.write(x.to_bytes())

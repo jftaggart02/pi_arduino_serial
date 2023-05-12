@@ -1,11 +1,10 @@
-// NOTE: This program only currently works with analog_serial.py
+// NOTE: Use in conjunction with analog_serial.py
 
 #define POT1 0
 #define POT2 1
 #define LED1 12
 #define LED2 13
 #define ERRLED 11
-
 
 void setup()
 {

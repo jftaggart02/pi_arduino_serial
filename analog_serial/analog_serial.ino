@@ -1,7 +1,8 @@
+// PROGRAM FUNCTION: Reads potentiometer value, sends it to pi, gets it back from pi, 
+// and lights up an LED with that value.
+
 #define POT1 0
 #define LED 12
-
-
 
 void setup()
 {
@@ -13,8 +14,6 @@ void setup()
   Serial.begin(9600);
 
 }
-
-
 
 int pot1;
 int received;
