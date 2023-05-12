@@ -1,3 +1,4 @@
+# import delay function
 from time import sleep
 
 class RGBLED:
@@ -14,6 +15,8 @@ class RGBLED:
     
     # sends serial message to arduino which it uses to 
     # change the color of the RGB LED
+    #   1st byte: LED ID
+    #   2nd - 4th bytes: amounts of red, green, and blue
     def setColor(self, r, g, b):
         self.ser.write(self.ID)
         self.ser.write(r.to_bytes(length=1,byteorder='big'))
@@ -22,6 +25,7 @@ class RGBLED:
 
     # tells the arduino to make the LED cycle through color spectrum
     def colorCycle(self):
+    
         # transition from red to yellow
         for x in range(256):
             self.setColor(255, x, 0)
@@ -52,5 +56,6 @@ class RGBLED:
             self.setColor(255, 0, x)
             sleep(self.color_cycle_delay)
    
+   # turns off LED
     def turnOff(self):
         self.setColor(0, 0, 0)
