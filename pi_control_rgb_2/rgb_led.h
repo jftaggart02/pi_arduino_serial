@@ -6,7 +6,8 @@ class RGBLED {
     int redPin;
     int greenPin;
     int bluePin;
-    RGBLED(int r, int g, int b);
+    char ID;
+    RGBLED(int r, int g, int b, char id);
     void setColor(int red, int green, int blue);
 };
 
