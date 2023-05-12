@@ -5,13 +5,20 @@ I use the pySerial library and the built-in arduino serial libary. URL for pySer
 
 ## Tutorial:
 ### Creating a serial object:
-> ser = serial.Serial(*port*, *baudrate*)
+    ser = serial.Serial(*port*, *baudrate*)
+
 For the "port" parameter, put the address of the serial port you want to send data to and receive data from. If you're using your personal computer, you can find in the Arduino IDE the name of the port your arduino's connected to. It might be something like "COM6". You'd put it in quotes like this:
-> ser = serial.Serial("COM6", *baudrate*)
+
+    ser = serial.Serial("COM6", *baudrate*)
+
 If you're using a raspberry pi, run this command in the linux terminal:
-> ls /dev/tty*
+
+    ls /dev/tty*
+
 It'll pull up a huge list of everything that starts with "/dev/tty". You might see "/dev/ttyACMX" or "/dev/ttyUSBX". The "X" is a placeholder for any digit. That's the address of the port your arduino's connected to. You'd put it in the parameter like this:
-> ser = serial.Serial("/dev/ttyACM0")
+
+    ser = serial.Serial("/dev/ttyACM0")
+
 The "baudrate" parameter is, simply put, how fast data can be transferred. A very common baud rate you see is 9600, but you can go up to 115200 on the arduino.
 
 There are other parameters like timeout and write_timeout, but I didn't need them for most of my projects. You can see the pySerial docs for more info about those.
