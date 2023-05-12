@@ -4,12 +4,14 @@
 // Red pin: 12
 // Green pin: 11
 // Blue Pin: 10
+// ID: '1'
 RGBLED LED1(12, 11, 10, '1');
 
 // Create RGB LED "LED2"
 // Red pin: 9
 // Green pin: 8
 // Blue Pin: 7
+// ID: '2'
 RGBLED LED2(9, 8, 7, '2');
 
 
@@ -30,18 +32,18 @@ void setup()
 byte r, g, b, id;
 int i;
 
-
-
 void loop() 
 {
 
-  // Read 3 bytes and set color of LED1 accordingly
+  // If there are at least 4 bytes in input buffer
   if (Serial.available() >= 4)
   {
+    // Read 4 bytes. 1st is LED ID and the other 3 are the values of red, green, and blue
     id = Serial.read();
     r = Serial.read();
     g = Serial.read();
     b = Serial.read();
+
     if (id == '1')
     {
       LED1.setColor(r, g, b);
