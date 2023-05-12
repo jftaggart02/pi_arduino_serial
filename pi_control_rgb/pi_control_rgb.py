@@ -11,15 +11,15 @@ arduino_ready_signal = 'R'
 # begin serial communication at baud of 9600
 # run ls dev/tty* and see if there's an "ACMX" or "USBX"
 # and change the serial address below accordingly.
-ser = serial.Serial('COM6', 9600)
+ser = serial.Serial('/dev/ttyUSB0', 9600)
 
 
 # sends serial message to arduino which it uses to 
 # change the color of the RGB LED
 def setColor(r, g, b):
-    ser.write(r.to_bytes())
-    ser.write(g.to_bytes())
-    ser.write(b.to_bytes())
+    ser.write(r.to_bytes(length=1,byteorder='big'))
+    ser.write(g.to_bytes(length=1,byteorder='big'))
+    ser.write(b.to_bytes(length=1,byteorder='big'))
     
     
 # waits for the arduino to send a character indicating
