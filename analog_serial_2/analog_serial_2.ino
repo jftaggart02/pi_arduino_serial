@@ -1,10 +1,10 @@
-// NOTE: Use in conjunction with analog_serial.py
+// PROGRAM FUNCTION: arduino sends 2 analog values to raspberry pi, gets them back, and lights up each LED with their respective value
 
 #define POT1 0
 #define POT2 1
-#define LED1 12
-#define LED2 13
-#define ERRLED 11
+#define LED1 11
+#define LED2 12
+#define ERRLED 13
 
 void setup()
 {
@@ -16,12 +16,31 @@ void setup()
   // Start serial communication at 9600 baud
   Serial.begin(9600);
 
+  // Send message saying, "I'm ready!"
+  Serial.write('R');
+
+  // Wait for raspberry pi to say, "I'm ready!"
+  bool waiting = true;
+  char ch;
+  while (waiting)
+  {
+    if (Serial.available() > 0)
+    {
+      ch = Serial.read();
+      if (ch == 'R')
+      {
+        waiting = false;
+      }
+    }
+  }
+
 }
 
 int pot1;
 int pot2; 
-int ledID;
-int ledVal;
+int deviceType;
+int deviceID;
+int deviceVal;
 int i;
 
 void loop() 
@@ -32,16 +51,18 @@ void loop()
   pot2 = map(analogRead(POT2), 0, 1023, 0, 255);
 
   // Send pot1 ID and value read
-  if (Serial.availableForWrite() > 1)
+  if (Serial.availableForWrite() >= 3)
   {
-    Serial.write(byte(1));
+    Serial.write('P');
+    Serial.write('1');
     Serial.write(byte(pot1));
   }
   
   // Send pot2 ID and value read
-  if (Serial.availableForWrite() > 1)
+  if (Serial.availableForWrite() >= 3)
   {
-    Serial.write(byte(2));
+    Serial.write('P');
+    Serial.write('2');
     Serial.write(byte(pot2));
   }
 
@@ -52,28 +73,33 @@ void loop()
     // Wait for reponse from pi
     while (1)
     {
-      if (Serial.available() > 1)
+      if (Serial.available() >= 3)
       {
         break;
       }
     }
 
-    // Read 2 bytes
-    ledID = Serial.read();
-    ledVal = Serial.read();
+    // Read 3 bytes
+    deviceType = Serial.read();
+    deviceID = Serial.read();
+    deviceVal = Serial.read();
 
     // Write LEDs accordingly
-    if (ledID == 1)
+    if (deviceType == 'L')
     {
-      analogWrite(LED1, ledVal);
-    }
-    else if (ledID == 2)
-    {
-      analogWrite(LED2, ledVal);
-    }
-    else if (ledID == 0)
-    {
-      digitalWrite(ERRLED, HIGH);
+      if (deviceID == '1')
+      {
+        analogWrite(LED1, deviceVal);
+      }
+      else if (deviceID == '2')
+      {
+        analogWrite(LED2, deviceVal);
+      }
+      else
+      {
+        digitalWrite(ERRLED, HIGH);
+      }
+
     }
 
   }

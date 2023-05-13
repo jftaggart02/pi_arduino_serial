@@ -55,7 +55,7 @@ Usually the "read()" method is used together with the "in_waiting" attribute, wh
 
 - **analog_serial:** arduino sends analog value read from potentiometer to raspberry pi, gets it back, and lights up LED with that value
 
-- **analog_serial_2 (in development):** arduino sends 2 analog values to raspberry pi, gets them back, and lights up each LED with their respective value
+- **analog_serial_2:** arduino sends 2 analog values to raspberry pi, gets them back, and lights up each LED with their respective value
 
 - **mega_serial_test:** tests the properties of the various built-in serial objects (Serial, Serial1, Serial2, Serial3)
 
