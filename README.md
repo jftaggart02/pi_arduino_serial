@@ -47,9 +47,6 @@ Usually the "read()" method is used together with the "in_waiting" attribute, wh
         if data == "A":
             # do something
 
-
-    
-
 ## Projects:
 - **pi_arduino_serial_test 1 and 2:** copied code from a tutorial page to see if it works. Link to tutorial page: https://roboticsbackend.com/raspberry-pi-arduino-serial-communication/#Arduino_code 
 
