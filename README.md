@@ -3,7 +3,7 @@ A collection of code for testing serial communication between raspberry pi and a
 
 I use the pySerial library and the built-in arduino serial libary. URL for pySerial docs: https://pyserial.readthedocs.io/en/latest/pyserial_api.html 
 
-## Tutorial:
+## Tutorial (in progress):
 ### Creating a serial object:
     ser = serial.Serial(port, baudrate)
 
