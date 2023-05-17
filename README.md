@@ -61,3 +61,5 @@ Usually the "read()" method is used together with the "in_waiting" attribute, wh
 - **pi_control_rgb:** raspberry pi sends data to arduino, which it interprets and changes the color of an RGB LED
 
 - **pi_control_rgb_2:** raspberry pi sends data to arduino, which it interprets and changes the colors of 2 different RGB LEDs
+
+- **send_float:** raspberry pi sends a floating-point number to arduino
