@@ -14,6 +14,10 @@ that new value every 10 ms.
 The reason I want to do this is for the Arduino end. If the arduino stops receiving the stream
 of motor speed info, it will set the desired speed to 0 and the motors will spin down.
 
+Actually I think it would be better to do 1 thread that updates both motor speeds at the same time. That way, I can ensure
+that the computer is sending the right and left motor speeds one right after the other. Then, in my Arduino code, I can 
+wait for 4 bytes to appear in the input buffer and update both desired motor speeds at the same time.
+
 Arduino code:
 
 void loop () {

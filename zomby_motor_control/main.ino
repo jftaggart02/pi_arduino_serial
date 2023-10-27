@@ -57,6 +57,9 @@ Once the speed has been set, the motor will continue at that speed until it
 receives another command.
 ******************************************************************************/
 
+// Motor slew rate delay in ms
+int motor_slew_delay = 20;
+
 void setup() {
     
     // Begin serial communication with motor controllers
@@ -73,7 +76,8 @@ void setup() {
 
 }
 
-byte id, desired_speed, desired_speed_left, desired_speed_right;
+byte id, desired_speed;
+byte desired_speed_left, desired_speed_right;
 byte actual_speed_left = 64;
 byte actual_speed_right = 64;
 
@@ -86,8 +90,23 @@ void loop() {
 
     // Else
 
-    // If there are 2 bytes in the input buffer
-    if (Serial.available() >= 2) {
+    // If there are 4 bytes in the input buffer
+    if (Serial.available() >= 4) {
+
+        id = Serial.read();
+        desired_speed = Serial.read();
+
+        if (id == 'r') {
+
+            desired_speed_right = desired_speed;
+
+        }
+
+        else if (id == 'l') {
+
+            desired_speed_left = desired_speed;
+
+        }
 
         id = Serial.read();
         desired_speed = Serial.read();
@@ -105,8 +124,11 @@ void loop() {
         }
 
     }
+
+    // If we stopped receiving data from computer
     else {
 
+        // Set desired speed to stopped
         desired_speed_left = 64;
         desired_speed_right = 64;
 
@@ -136,12 +158,15 @@ void loop() {
 
     }
 
+    // Set left motor speeds
     roboclaw.ForwardBackwardM1(left_front,  actual_speed_left);
-    roboclaw.ForwardBackwardM1(right_front, actual_speed_right);
     roboclaw.ForwardBackwardM1(left_rear,   actual_speed_left);
-    roboclaw.ForwardBackwardM1(right_rear,  actual_speed_right);
 
-    // Wait 10 ms
-    delay(10);
+    // Set right motor speeds
+    roboclaw.ForwardBackwardM1(right_front, actual_speed_right);
+    roboclaw.ForwardBackwardM1(right_rear,  actual_speed_right);
+    
+    // Motor slew delay
+    delay(motor_slew_delay);
     
 }
