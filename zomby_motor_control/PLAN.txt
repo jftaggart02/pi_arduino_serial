@@ -1,0 +1,33 @@
+Computer code:
+1. import serial library
+2. begin serial communication with Arduino
+3. wait for arduino to indicate that it's ready
+4. send continuous stream of motor commands to make the motors spin up slowly and spin down
+slowly.
+
+Arduino code:
+
+void loop () {
+
+    Get RC switch value;
+
+    If (switch == on)
+        // RC Logic
+
+    Else {
+
+        if there are 2 bytes in input buffer
+            desired = serial message;
+        else
+            desired = 0;
+
+        If (speed < desired)
+            speed ++;
+        Else If (speed > desired)
+            speed --;
+        write motors to speed;
+        Delay 10 ms;
+
+    }
+
+}
