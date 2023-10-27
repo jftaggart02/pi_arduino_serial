@@ -5,6 +5,15 @@ Computer code:
 4. send continuous stream of motor commands to make the motors spin up slowly and spin down
 slowly.
 
+Maybe what I could do is start 2 threads: one for right and one for left side motors.
+Each thread sends motor speed info every 10ms.
+It sends whatever the motor_speed attribute is. To change the motor speed in the program,
+all you need to do is change the motor_speed attribute. The threads will then start sending
+that new value every 10 ms.
+
+The reason I want to do this is for the Arduino end. If the arduino stops receiving the stream
+of motor speed info, it will set the desired speed to 0 and the motors will spin down.
+
 Arduino code:
 
 void loop () {
