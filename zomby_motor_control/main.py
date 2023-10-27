@@ -5,7 +5,7 @@ from time import sleep
 # begin serial communication with arduino
 ser = serial.Serial('COM6', 9600)
 
-# THIS MUST MATCH DELAY IN ARDUINO CODE
+# THIS MUST MATCH THE MOTOR SLEW DELAY OF THE ARDUINO
 # units are in seconds
 motor_slew_delay = 0.02
 

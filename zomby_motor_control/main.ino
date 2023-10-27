@@ -12,7 +12,7 @@ RC_Receiver receiver(13,11,9,7,5);
 //Leave the default value for the un used channels
 //Invert the min and max val to reverse
 int minMax[6][2] = { 
-// Min   Max
+//   Min   Max
 	{1088,1880},  // Ch1: Throttle
 	{1088,1873},  // Ch2: Elevator
 	{1085,1871},  // Ch3: Aileron (Max to the left and min to the right)
@@ -143,8 +143,8 @@ void computer_control() {
 
     byte id, desired_speed;
     byte desired_speed_left, desired_speed_right;
-    byte actual_speed_left = 64;
-    byte actual_speed_right = 64;
+    static byte actual_speed_left = 64;
+    static byte actual_speed_right = 64;
 
     // If there are 4 bytes in the input buffer 
     if (Serial.available() >= 4) {
