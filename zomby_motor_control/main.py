@@ -2,13 +2,12 @@ import serial
 import threading
 from time import sleep
 
-# begin serial communication with arduino
-ser = serial.Serial('COM6', 9600)
 
 class Motor:
-    # STATIC MEMBER VARIABLES -------------------------------------------------
+    # STATIC CLASS VARIABLES -------------------------------------------------
     motor_slew_delay = 0.05 # units are in seconds
     motor_count = 0
+
 
     # constructor
     def __init__(self, ser_ID, ser):
@@ -31,6 +30,7 @@ class Motor:
         # send motor speed to arduino
         self.ser.write(self.__speed.to_bytes(length=1, byteorder='big'))
 
+
     def __slew_function(self):
         while self.__stop_slew.is_set() == False:
             # slew functionality
@@ -41,6 +41,7 @@ class Motor:
                 self.__speed += 1
                 self.__sendSpeed()
             sleep(Motor.motor_slew_delay)
+
 
     # PUBLIC MEMBER FUNCTIONS -------------------------------------------------
     def setSpeed(self, speed_to_set): # sets motor speed attribute
@@ -59,12 +60,18 @@ class Motor:
         elif self.__slew == True:
             self.__desired_speed = speed_to_set
 
+
     def setSlew(self, slew_bool):
         if slew_bool == True:
             self.__slew_thread = threading.Thread(target=self.__slew_function, args=(self.__ID,), daemon=True)
             self.__slew_thread.start()
         elif slew_bool == False:
             self.__stop_slew.set()
+
+
+# begin serial communication with arduino
+ser = serial.Serial('COM6', 9600)
+
 
 # waits for arduino to indicate that it's ready
 def wait_for_arduino():
@@ -85,13 +92,14 @@ def wait_for_arduino():
                 
     print("Done waiting.")
 
+
 motor_right = Motor(b"r", ser)
 motor_left = Motor(b"l", ser)
+
 
 # -------------------------------------
 # Here's the main part of the program:
 # -------------------------------------
-
 if __name__ == "__main__":
 
     # wait for arduino to be ready to receive data
