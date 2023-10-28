@@ -15,7 +15,7 @@ class Motor:
         self.__ID = Motor.motor_count
         Motor.motor_count += 1
         self.__ser_ID = ser_ID # initialize motor ID we send over serial
-        self.ser = ser # pass reference to serial object
+        self.__ser = ser # pass reference to serial object
         self.__speed = 64 # default speed is stopped (64)
         self.__desired_speed = 64
         self.__slew = False # slew is off by default
@@ -25,10 +25,10 @@ class Motor:
     # PRIVATE MEMBER FUNCTIONS ------------------------------------------------
     def __sendSpeed(self): # sends motor speed attribute to arduino
         # send motor ID to arduino
-        self.ser.write(self.__ser_ID)
+        self.__ser.write(self.__ser_ID)
 
         # send motor speed to arduino
-        self.ser.write(self.__speed.to_bytes(length=1, byteorder='big'))
+        self.__ser.write(self.__speed.to_bytes(length=1, byteorder='big'))
 
 
     def __slew_function(self):
