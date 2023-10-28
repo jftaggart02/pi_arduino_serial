@@ -5,38 +5,66 @@ from time import sleep
 # begin serial communication with arduino
 ser = serial.Serial('COM6', 9600)
 
-# THIS MUST MATCH THE MOTOR SLEW DELAY OF THE ARDUINO
-# units are in seconds
-motor_slew_delay = 0.02
-
 class Motor:
-    # default speed is stopped (64)
-    speed = 64
-
-    # sets motor speed attribute
-    def setSpeed(self, speed_to_set):
-        self.speed = speed_to_set
-
-        # constrain motor speed to value from 0 to 128
-        if self.speed < 0:
-            self.speed = 0
-        if self.speed > 128:
-            self.speed = 128
+    # STATIC MEMBER VARIABLES -------------------------------------------------
+    motor_slew_delay = 0.05 # units are in seconds
+    motor_count = 0
 
     # constructor
-    def __init__(self, ID, ser):
-        # initialize motor ID
-        self.ID = ID
-        # pass reference to serial object
-        self.ser = ser
+    def __init__(self, ser_ID, ser):
+        # PRIVATE MEMBER VARIABLES ------------------------------------------------
+        self.__ID = Motor.motor_count
+        Motor.motor_count += 1
+        self.__ser_ID = ser_ID # initialize motor ID we send over serial
+        self.ser = ser # pass reference to serial object
+        self.__speed = 64 # default speed is stopped (64)
+        self.__desired_speed = 64
+        self.__slew = False # slew is off by default
+        self.__stop_slew = threading.Event() # false by default, when set to true, it stops the slew thread
+        
 
-    # sends motor speed attribute to arduino
-    def sendSpeed(self):
+    # PRIVATE MEMBER FUNCTIONS ------------------------------------------------
+    def __sendSpeed(self): # sends motor speed attribute to arduino
         # send motor ID to arduino
-        self.ser.write(self.ID)
+        self.ser.write(self.__ser_ID)
 
         # send motor speed to arduino
-        self.ser.write(self.speed.to_bytes(length=1, byteorder='big'))
+        self.ser.write(self.__speed.to_bytes(length=1, byteorder='big'))
+
+    def __slew_function(self):
+        while self.__stop_slew.is_set() == False:
+            # slew functionality
+            if self.__desired_speed < self.__speed:
+                self.__speed += 1
+                self.__sendSpeed()
+            elif self.__desired_speed > self.__speed:
+                self.__speed += 1
+                self.__sendSpeed()
+            sleep(Motor.motor_slew_delay)
+
+    # PUBLIC MEMBER FUNCTIONS -------------------------------------------------
+    def setSpeed(self, speed_to_set): # sets motor speed attribute
+        # constrain motor speed to value from 0 to 128
+        if speed_to_set < 0:
+            speed_to_set = 0
+        if speed_to_set > 128:
+            speed_to_set = 128
+
+        # if slew is not on, send speed to arduino manually
+        if self.__slew == False:
+            self.__speed = speed_to_set
+            self.__sendSpeed()
+
+        # if slew is on, set desired speed
+        elif self.__slew == True:
+            self.__desired_speed = speed_to_set
+
+    def setSlew(self, slew_bool):
+        if slew_bool == True:
+            self.__slew_thread = threading.Thread(target=self.__slew_function, args=(self.__ID,), daemon=True)
+            self.__slew_thread.start()
+        elif slew_bool == False:
+            self.__stop_slew.set()
 
 # waits for arduino to indicate that it's ready
 def wait_for_arduino():
@@ -60,14 +88,6 @@ def wait_for_arduino():
 motor_right = Motor(b"r", ser)
 motor_left = Motor(b"l", ser)
 
-def send_motor_stream():
-    while True:
-        # send motor speeds to arduino
-        motor_right.sendSpeed()
-        motor_left.sendSpeed()
-        # wait
-        sleep(motor_slew_delay)
-
 # -------------------------------------
 # Here's the main part of the program:
 # -------------------------------------
@@ -77,37 +97,9 @@ if __name__ == "__main__":
     # wait for arduino to be ready to receive data
     wait_for_arduino()
 
-    # start parallel process that sends a constant stream of motor speed data
-    # it will shutdown when the main part of the program stops because of "daemon" option
-    x = threading.Thread(target=send_motor_stream, args=(1,), daemon=True)
-    x.start()
+    motor_right.setSlew(True)
 
-    # spin motors as fast as they will from stopped to full blast
     motor_right.setSpeed(128)
-    motor_left.setSpeed(128)
-    sleep(4)
-
-    # spin motors as fast as they will from full blast to stopped
+    sleep(5)
     motor_right.setSpeed(64)
-    motor_left.setSpeed(64)
-    sleep(4)
-
-    # spin motors smoothly from stopped to full blast
-    for x in range(64, 128):
-        motor_right.setSpeed(x)
-        motor_left.setSpeed(x)
-        # wait in seconds
-        sleep(0.04)
-
-    # wait for a few seconds
-    sleep(4)
-
-    # spin motors smoothly from full blast to stopped
-    for x in range(128, 64):
-        motor_right.setSpeed(x)
-        motor_left.setSpeed(x)
-        # wait 20 ms
-        sleep(0.04)
-
-    # wait for a few seconds
-    sleep(4)
+    sleep(5)

@@ -26,9 +26,6 @@ int minMax[6][2] = {
 #define GEAR_CH 5
 #define AUX_CH 6
 
-#define MOTOR_ID_R 'r'
-#define MOTOR_ID_L 'l'
-
 // Includes required to use Roboclaw library
 #include <SoftwareSerial.h>
 #include "RoboClaw.h"
@@ -65,6 +62,9 @@ Once the speed has been set, the motor will continue at that speed until it
 receives another command.
 ******************************************************************************/
 
+// Motor slew rate delay in ms
+int motor_slew_delay = 20;
+
 void setup() {
     
     // Begin serial communication with motor controllers
@@ -80,6 +80,8 @@ void setup() {
     Serial.write('R');
 
 }
+
+
 
 void loop() {
 
@@ -139,10 +141,10 @@ void RC_control() {
 
 void computer_control() {
 
-    byte id;
-    byte speed_received;
-    static byte speed_left = 64;
-    static byte speed_right = 64;
+    byte id, desired_speed;
+    byte desired_speed_left, desired_speed_right;
+    static byte actual_speed_left = 64;
+    static byte actual_speed_right = 64;
 
     // If there are 4 bytes in the input buffer 
     if (Serial.available() >= 4) {
@@ -152,32 +154,67 @@ void computer_control() {
 
             // Read two bytes. First is motor ID and second is speed
             id = Serial.read();
-            speed_received = Serial.read();
+            desired_speed = Serial.read();
 
             // If received speed is for the right motor
-            if (id == MOTOR_ID_R) {
+            if (id == 'r') {
 
-                speed_right = speed_received;
-                
+                desired_speed_right = desired_speed;
+
             }
 
             // If received speed is for the left motor
-            else if (id == MOTOR_ID_L) {
+            else if (id == 'l') {
 
-                speed_left = speed_received;
+                desired_speed_left = desired_speed;
 
             }
 
         }
 
-        // Set right motor speeds
-        roboclaw.ForwardBackwardM1(right_front, speed_right);
-        roboclaw.ForwardBackwardM1(right_rear,  speed_right);
+    }
 
-        // Set left motor speeds
-        roboclaw.ForwardBackwardM1(left_front,  speed_left);
-        roboclaw.ForwardBackwardM1(left_rear,   speed_left);
+    // If we don't get anything from the computer
+    else {
+
+        // Set desired speed to stopped
+        desired_speed_left = 64;
+        desired_speed_right = 64;
 
     }
+
+    // Increment actual speed towards desired speed
+    // 1 tick every x amount of miliseconds
+    if (actual_speed_left < desired_speed_left) {
+
+        actual_speed_left++;
+
+    }
+    else if (actual_speed_left > desired_speed_left) {
+
+        actual_speed_left--;
+
+    }
+    if (actual_speed_right < desired_speed_right) {
+
+        actual_speed_right++;
+
+    }
+    else if (actual_speed_right > desired_speed_right) {
+
+        actual_speed_right--;
+
+    }
+
+    // Set left motor speeds
+    roboclaw.ForwardBackwardM1(left_front,  actual_speed_left);
+    roboclaw.ForwardBackwardM1(left_rear,   actual_speed_left);
+
+    // Set right motor speeds
+    roboclaw.ForwardBackwardM1(right_front, actual_speed_right);
+    roboclaw.ForwardBackwardM1(right_rear,  actual_speed_right);
+    
+    // Motor slew delay
+    delay(motor_slew_delay);
 
 }

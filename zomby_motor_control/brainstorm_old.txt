@@ -45,7 +45,20 @@ void loop () {
 
 }
 
+Another even better idea for computer_control function:
+
+void loop runs every milisecond
+We have counters that count how many times we've looped
+Every 1 ms, we check for serial input
+    If we received serial input, update desired speed
+    If we didn't, increment a counter. If we made it 1000 ticks (1 second),
+        then set our desired speed to stopped b/c we timed out
+Every 10 ms, we increment our actual speed towards our desired speed
+
+
 Another idea for computer_control function in Arduino code:
+
+Actually, this may not work as it is currently
 
 void computer_control() {
 
