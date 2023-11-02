@@ -96,7 +96,7 @@ class Motor:
 
     def setSlew(self, slew_bool):
         if slew_bool == True:
-            self.__slew_thread = threading.Thread(target=self.__slew_function, args=(self.__ID,), daemon=True)
+            self.__slew_thread = threading.Thread(target=self.__slew_function, daemon=True)
             self.__slew_thread.start()
         elif slew_bool == False:
             self.__stop_slew.set()
@@ -123,8 +123,6 @@ def wait_for_arduino(ser):
             if char == arduino_ready_signal:
                 print("Arduino is ready.")
                 waiting = False
-                
-    print("Arduino is ready.")
 
 
 # -----------------------------------------------------------------------------
@@ -133,7 +131,7 @@ def wait_for_arduino(ser):
 if __name__ == "__main__":
 
     # begin serial communication with arduino
-    ser = serial.Serial('COM6', 9600)
+    ser = serial.Serial('COM11', 9600)
 
     # wait for arduino to be ready to receive data
     wait_for_arduino(ser)
@@ -150,3 +148,4 @@ if __name__ == "__main__":
     
     motor_right.setSpeed(64)
     motor_left.setSpeed(64)
+    sleep(5)
