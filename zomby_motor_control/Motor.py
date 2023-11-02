@@ -31,8 +31,6 @@ class Motor:
 
 
     # STATIC CLASS VARIABLES --------------------------------------------------
-    motor_slew_time = 3 # time (seconds) it takes for motors to spin from stopped to full speed
-    motor_slew_delay = motor_slew_time / 64
     motor_count = 0
 
 
@@ -43,7 +41,7 @@ class Motor:
         Motor.motor_count += 1
 
         self.__ser_ID = ser_ID # sets motor ID char that gets sent over serial
-        self.__ser = ser # get reference to serial object
+        self.__serial_port = ser # get reference to serial object
 
         # default speed is stopped (64)
         self.__speed = 64 # speed that gets sent to arduino every time self.__sendSpeed() is called
@@ -51,29 +49,35 @@ class Motor:
 
         self.__slew = False # slew is disabled by default
         self.__stop_slew = threading.Event() # false by default, when set to true, it stops the slew thread
+
+        self.__motor_slew_time = 3 # time (seconds) it takes for motors to spin from stopped to full speed
+        self.__motor_slew_delay = self.__motor_slew_time / 64
         
 
     # PRIVATE MEMBER FUNCTIONS ------------------------------------------------
     def __sendSpeed(self): # sends motor speed attribute to arduino
         # send motor ID to arduino
-        self.__ser.write(self.__ser_ID)
+        self.__serial_port.write(self.__ser_ID)
 
         # send motor speed to arduino
-        self.__ser.write(self.__speed.to_bytes(length=1, byteorder='big'))
+        self.__serial_port.write(self.__speed.to_bytes(length=1, byteorder='big'))
+
+        # DEBUG
+        print(self.__speed)
 
 
     def __slew_function(self):
         while self.__stop_slew.is_set() == False:
 
-            if self.__desired_speed < self.__speed:
+            if self.__speed < self.__desired_speed:
                 self.__speed += 1
                 self.__sendSpeed()
 
-            elif self.__desired_speed > self.__speed:
-                self.__speed += 1
+            elif self.__speed > self.__desired_speed:
+                self.__speed -= 1
                 self.__sendSpeed()
 
-            sleep(Motor.motor_slew_delay)
+            sleep(self.__motor_slew_delay)
 
 
     # PUBLIC MEMBER FUNCTIONS -------------------------------------------------
@@ -96,19 +100,23 @@ class Motor:
 
     def setSlew(self, slew_bool):
         if slew_bool == True:
+            self.__slew = True
+            if self.__stop_slew.is_set():
+                self.__stop_slew.clear()
             self.__slew_thread = threading.Thread(target=self.__slew_function, daemon=True)
             self.__slew_thread.start()
         elif slew_bool == False:
+            self.__slew = False
             self.__stop_slew.set()
 
 
     def setSlewRate(self, slew_time):
-        Motor.motor_slew_time = slew_time
-        Motor.motor_slew_delay = Motor.motor_slew_time / 64
+        self.__motor_slew_time = slew_time
+        self.__motor_slew_delay = self.__motor_slew_time / 64
 
 
 # waits for arduino to indicate that it's ready
-def wait_for_arduino(ser):
+def wait_for_arduino(serial_port):
 
     # waits to receive this character
     arduino_ready_signal = 'R'
@@ -118,34 +126,9 @@ def wait_for_arduino(ser):
     print("Waiting for Arduino...")
 
     while waiting:
-        if ser.in_waiting > 0:
-            char = ser.read(1).decode('utf-8')
+        if serial_port.in_waiting > 0:
+            char = serial_port.read(1).decode('utf-8')
             if char == arduino_ready_signal:
                 print("Arduino is ready.")
                 waiting = False
 
-
-# -----------------------------------------------------------------------------
-# Here's the main part of the program:
-# -----------------------------------------------------------------------------
-if __name__ == "__main__":
-
-    # begin serial communication with arduino
-    ser = serial.Serial('COM11', 9600)
-
-    # wait for arduino to be ready to receive data
-    wait_for_arduino(ser)
-
-    motor_right = Motor(b"r", ser)
-    motor_left = Motor(b"l", ser)
-
-    motor_right.setSlew(True)
-    motor_left.setSlew(True)
-
-    motor_right.setSpeed(128)
-    motor_left.setSpeed(0)
-    sleep(5)
-    
-    motor_right.setSpeed(64)
-    motor_left.setSpeed(64)
-    sleep(5)
