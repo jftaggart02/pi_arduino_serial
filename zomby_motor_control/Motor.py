@@ -2,6 +2,7 @@ import serial
 import threading
 from time import sleep
 
+DEBUG = 0
 
 class Motor:
     # NOTES -------------------------------------------------------------------
@@ -63,7 +64,8 @@ class Motor:
         self.__serial_port.write(self.__speed.to_bytes(length=1, byteorder='big'))
 
         # DEBUG
-        print(self.__speed)
+        if DEBUG:
+            print(self.__speed)
 
 
     def __slew_function(self):
