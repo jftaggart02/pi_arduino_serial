@@ -5,6 +5,23 @@ from time import sleep
 DEBUG = 0
 
 class Zomby:
+    def __wait_for_arduino(self):
+
+        # waits to receive this character
+        arduino_ready_signal = 'R'
+        
+        waiting = True
+        
+        print("Waiting for Arduino...")
+
+        while waiting:
+            if self.__serial_port.in_waiting > 0:
+                char = self.__serial_port.read(1).decode('utf-8')
+                if char == arduino_ready_signal:
+                    print("Arduino is ready.")
+                    waiting = False
+
+
     def __init__(self, port, baud_rate):
         # Initialize serial port
         self.__serial_port = serial.Serial(port, baud_rate)
@@ -23,6 +40,10 @@ class Zomby:
         # For use in self.__sendSpeed()
         self.__ser_ID_right = 'r'
         self.__ser_ID_left = 'l'
+
+
+        # Wait for arduino
+        self.__wait_for_arduino()
 
         # Spin up motor control thread
         self.__motor_control = threading.Thread(target=self.__motor_control_function, daemon=True)
@@ -118,23 +139,6 @@ class Zomby:
     def stop(self):
         self.__desired_speed_left = 64
         self.__desired_speed_right = 64
-
-
-    def wait_for_arduino(self):
-
-        # waits to receive this character
-        arduino_ready_signal = 'R'
-        
-        waiting = True
-        
-        print("Waiting for Arduino...")
-
-        while waiting:
-            if self.__serial_port.in_waiting > 0:
-                char = self.__serial_port.read(1).decode('utf-8')
-                if char == arduino_ready_signal:
-                    print("Arduino is ready.")
-                    waiting = False
 
     
     # currently can't be undone when called
