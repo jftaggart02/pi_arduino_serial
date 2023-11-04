@@ -2,7 +2,7 @@ import serial
 import threading
 from time import sleep
 
-DEBUG = 0
+DEBUG = 1
 
 class Zomby:
     def __wait_for_arduino(self):
@@ -38,8 +38,8 @@ class Zomby:
         self.__motor_slew_delay = 4 / 64
 
         # For use in self.__sendSpeed()
-        self.__ser_ID_right = 'r'
-        self.__ser_ID_left = 'l'
+        self.__ser_ID_right = b"r"
+        self.__ser_ID_left = b"l"
 
 
         # Wait for arduino
@@ -54,6 +54,10 @@ class Zomby:
         # send right motor ID to arduino
         self.__serial_port.write(self.__ser_ID_right)
 
+        # DEBUG
+        if DEBUG:
+            print(self.__ser_ID_right)
+
         # send right motor speed to arduino
         self.__serial_port.write(self.__speed_right.to_bytes(length=1, byteorder='big'))
 
@@ -63,6 +67,10 @@ class Zomby:
 
         # send left motor ID to arduino
         self.__serial_port.write(self.__ser_ID_left)
+
+        # DEBUG
+        if DEBUG:
+            print(self.__ser_ID_left)
 
         # send left motor speed to arduino
         self.__serial_port.write(self.__speed_left.to_bytes(length=1, byteorder='big'))
@@ -102,8 +110,8 @@ class Zomby:
         elif percent_speed < 0:
             percent_speed = 0
 
-        self.__desired_speed_left = 64 - (64 * (percent_speed/100))
-        self.__desired_speed_right = 64 + (64 * (percent_speed/100))
+        self.__desired_speed_left = 64 - int(64 * (percent_speed/100))
+        self.__desired_speed_right = 64 + int(64 * (percent_speed/100))
 
 
     def turnRight(self, percent_speed):
@@ -112,8 +120,8 @@ class Zomby:
         elif percent_speed < 0:
             percent_speed = 0
             
-        self.__desired_speed_left = 64 + (64 * (percent_speed/100))
-        self.__desired_speed_right = 64 - (64 * (percent_speed/100))
+        self.__desired_speed_left = 64 + int(64 * (percent_speed/100))
+        self.__desired_speed_right = 64 - int(64 * (percent_speed/100))
 
     
     def forward(self, percent_speed):
@@ -122,8 +130,8 @@ class Zomby:
         elif percent_speed < 0:
             percent_speed = 0
             
-        self.__desired_speed_left = 64 + (64 * (percent_speed/100))
-        self.__desired_speed_right = 64 + (64 * (percent_speed/100))
+        self.__desired_speed_left = 64 + int(64 * (percent_speed/100))
+        self.__desired_speed_right = 64 + int(64 * (percent_speed/100))
 
     
     def backward(self, percent_speed):
@@ -132,8 +140,8 @@ class Zomby:
         elif percent_speed < 0:
             percent_speed = 0
             
-        self.__desired_speed_left = 64 - (64 * (percent_speed/100))
-        self.__desired_speed_right = 64 - (64 * (percent_speed/100))
+        self.__desired_speed_left = 64 - int(64 * (percent_speed/100))
+        self.__desired_speed_right = 64 - int(64 * (percent_speed/100))
     
 
     def stop(self):

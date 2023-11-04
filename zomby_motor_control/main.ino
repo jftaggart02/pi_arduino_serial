@@ -1,30 +1,32 @@
+// Updated as of 11/4/23
+
 #include <RC_Receiver.h>
 
-RC_Receiver receiver(13,11,9,7,5);
+RC_Receiver receiver(13,12,11);
 /* Ch1: 13
- * Ch2: 11
- * Ch3: 9
- * Ch4: 7
- * Ch5: 5
+ * Ch2: 12
+ * Ch3: 11
+ * Ch4: 
+ * Ch5: 
  */
 
 //Channel min and max value
 //Leave the default value for the un used channels
 //Invert the min and max val to reverse
-int minMax[6][2] = { 
+int minMax[3][2] = { 
 //   Min   Max
-	{1088,1880},  // Ch1: Throttle
-	{1088,1873},  // Ch2: Elevator
-	{1085,1871},  // Ch3: Aileron (Max to the left and min to the right)
-	{1090,1875},  // Ch4: Rudder (Max to the left and min to the right)
-    {1880,1080},  // Ch5: Gear Channel (kill switch) (0 = 1880) (1 = 1080)
-    {1880,1080}   // Ch6: Aux channel (0 = 1880) (1/2 = 1480) (1 = 1080)
+	{1064,1907},  // Ch1: Elevator 
+	{1065,1899},  // Ch2: Aileron
+	{1064,1906}//,  // Ch3: Gear 
+	//{1090,1875},  // Ch4:  
+  //  {1880,1080},  // Ch5: 
+  //  {1880,1080}   // Ch6: 
 };
 
-#define ELEV_CH 2
-#define AIL_CH 3
-#define GEAR_CH 5
-#define AUX_CH 6
+#define ELEV_CH 1
+#define AIL_CH 2
+#define GEAR_CH 3
+// #define AUX_CH 6
 
 #define MOTOR_ID_R 'r'
 #define MOTOR_ID_L 'l'
@@ -34,9 +36,9 @@ int minMax[6][2] = {
 #include "RoboClaw.h"
 
 // See limitations of Arduino SoftwareSerial
-// Rx pin: 18
-// TX pin: 19
-SoftwareSerial serial(18,19);	
+// Tx pin: 18
+// RX pin: 19
+SoftwareSerial serial(19,18);	
 RoboClaw roboclaw(&serial,10000);
 
 // Addresses (in hexadecimal) of each of the 4 motor controllers
@@ -86,6 +88,9 @@ void loop() {
     // Get RC switch value
     int kill_switch = receiver.getMap(GEAR_CH);
 
+    // Serial.print("kill_switch value: ");
+    // Serial.println(kill_switch);
+
     // If aux switch is on
     if (kill_switch > 70) {
 
@@ -96,6 +101,8 @@ void loop() {
 
     // Else if the aux switch is off
     else if (kill_switch < 30) {
+
+      
 
         // Let the computer control the robot
         computer_control();
@@ -114,7 +121,11 @@ void loop() {
 void RC_control() {
 
     int speed = map(receiver.getMap(ELEV_CH), 0, 100, 0, 128);
-    int difference = map(receiver.getMap(AIL_CH), 0, 100, -40, 40);
+    // Serial.print("Speed value: ");
+    // Serial.println(speed);
+    int difference = map(receiver.getMap(AIL_CH), 0, 100, 40, -40);
+    // Serial.print("Difference value: ");
+    // Serial.println(difference);
 
     // Create dead zone in the middle of the stick so the robot will stop moving
     // when stick is in the middle
