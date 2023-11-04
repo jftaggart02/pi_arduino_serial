@@ -2,7 +2,7 @@ import serial
 import threading
 from time import sleep
 
-DEBUG = 0
+DEBUG = 1
 
 class Motor:
     # NOTES -------------------------------------------------------------------
@@ -77,6 +77,9 @@ class Motor:
 
             elif self.__speed > self.__desired_speed:
                 self.__speed -= 1
+                self.__sendSpeed()
+
+            else:
                 self.__sendSpeed()
 
             sleep(self.__motor_slew_delay)

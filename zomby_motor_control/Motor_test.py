@@ -6,62 +6,26 @@ from time import sleep
 if __name__ == "__main__":
 
     # begin serial communication with arduino
-    ser = serial.Serial('COM11', 9600)
+    mega_port = serial.Serial('COM9', 9600)
 
     # wait for arduino to be ready to receive data
-    wait_for_arduino(ser)
+    wait_for_arduino(mega_port)
 
-    motor_right = Motor(b"r", ser)
-    motor_left = Motor(b"l", ser)
+    #motor_right = Motor(b"r", mega_port)
+    motor_left = Motor(b"l", mega_port)
 
-    motor_right.setSlew(True)
+    #motor_right.setSlew(True)
     motor_left.setSlew(True)
 
-    motor_right.setSlewRate(1)
-    motor_left.setSlewRate(1)
+    #motor_right.setSlewRate(10)
+    motor_left.setSlewRate(10)
 
-    motor_right.setSpeed(128)
-    motor_left.setSpeed(0)
-    sleep(3)
+    #motor_right.setSpeed(96)
+    motor_left.setSpeed(68)
+    sleep(10)
     
-    motor_right.setSpeed(64)
+    #motor_right.setSpeed(64)
     motor_left.setSpeed(64)
-    sleep(3)
+    sleep(10)
 
-    motor_right.setSlew(False)
-    motor_left.setSlew(False)
     
-    motor_right.setSpeed(128)
-    motor_left.setSpeed(0)
-    sleep(3)
-    
-    motor_right.setSpeed(64)
-    motor_left.setSpeed(64)
-    sleep(3)
-
-    # Let's try this again:
-
-    motor_right.setSlew(True)
-    motor_left.setSlew(True)
-
-    motor_right.setSlewRate(1)
-    motor_left.setSlewRate(1)
-
-    motor_right.setSpeed(128)
-    motor_left.setSpeed(0)
-    sleep(3)
-    
-    motor_right.setSpeed(64)
-    motor_left.setSpeed(64)
-    sleep(3)
-
-    motor_right.setSlew(False)
-    motor_left.setSlew(False)
-    
-    motor_right.setSpeed(128)
-    motor_left.setSpeed(0)
-    sleep(3)
-    
-    motor_right.setSpeed(64)
-    motor_left.setSpeed(64)
-    sleep(3)
